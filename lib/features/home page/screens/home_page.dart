@@ -13,22 +13,19 @@ class _HomePageState extends State<HomePage> {
   bool _default = true;
   String temperature = '0'; // Declare temperature as a state variable
 
-  clicked({required bool value}) {
-    setState(() {
-      _default = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    DatabaseReference deviceRef =
-        FirebaseDatabase.instance.ref().child('sensor');
+    DatabaseReference deviceRef = FirebaseDatabase.instance.ref('0002');
 
-    // Stream listener
     deviceRef.onValue.listen((event) {
-      setState(() {
-        temperature = event.snapshot.value.toString();
-      });
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+
+      if (data != null) {
+        setState(() {
+          // Assuming the values exist and have correct types
+          temperature = data['temperature'].toString();
+        });
+      }
     });
 
     return Scaffold(
@@ -160,8 +157,25 @@ class _HomePageState extends State<HomePage> {
                 height: 46.h,
                 width: 145.w,
                 child: ElevatedButton(
-                  onPressed: () {
-                    clicked(value: true);
+                  onPressed: () async {
+                    // Show a loading indicator while waiting for the update
+                    showDialog(
+                        context: context,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()));
+                            
+
+                    await deviceRef.update({'default': true});
+
+                    final snapshot = await deviceRef.child('default').get();
+                    if (snapshot.exists) {
+                      setState(() {
+                        _default = snapshot.value as bool;
+                      });
+                    } else {
+                      print('No data available.');
+                    }
+                    Navigator.of(context).pop(); // Close the dialog
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50.h),
@@ -191,12 +205,25 @@ class _HomePageState extends State<HomePage> {
                 height: 46.h,
                 width: 145.w,
                 child: ElevatedButton(
-                  onPressed: () {
-                    FirebaseDatabase.instance
-                        .ref()
-                        .child('sensor')
-                        .set({'temperature': 0});
-                    clicked(value: false);
+                  onPressed: () async {
+                    // Show a loading indicator while waiting for the update
+                    showDialog(
+                        context: context,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()));
+
+                    // Update the value in Firebase
+                    await deviceRef.update({'default': false});
+
+                    final snapshot = await deviceRef.child('default').get();
+                    if (snapshot.exists) {
+                      setState(() {
+                        _default = snapshot.value as bool;
+                      });
+                    } else {
+                      print('No data available.');
+                    }
+                    Navigator.of(context).pop(); // Close the dialog
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50.h),
