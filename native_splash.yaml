@@ -1,0 +1,11 @@
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#494949"
+  image: "assets/safetemp-high-resolution-logo-dark-one.png"
+
+  android_12:
+    image: "assets/safetemp-high-resolution-logo-dark-one.png"
+    color: "#494949"

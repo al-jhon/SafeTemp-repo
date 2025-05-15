@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "240353898619",
+    "project_id": "safetemp-850ab",
+    "storage_bucket": "safetemp-850ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240353898619:android:9ac4942defc649dfda72de",
+        "android_client_info": {
+          "package_name": "com.example.safe_temp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdSGEZlyMWxkr-L9GOgLTq7DsV1_ZHEAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
