@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:safe_temp/features/add%20profile/screens/add_profile_2.dart';
+import 'package:safe_temp/features/add%20profile/services/scan_device_id.dart';
 
 class AddProfile extends StatefulWidget {
   const AddProfile({super.key});
@@ -10,6 +10,14 @@ class AddProfile extends StatefulWidget {
 }
 
 class _AddProfileState extends State<AddProfile> {
+  TextEditingController deviceIdController = TextEditingController();
+
+  @override
+  void dispose() {
+    deviceIdController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +53,9 @@ class _AddProfileState extends State<AddProfile> {
                       SizedBox(
                         height: 46.h,
                         child: TextField(
+                          controller: deviceIdController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).colorScheme.tertiary,
                             filled: true,
@@ -70,10 +81,18 @@ class _AddProfileState extends State<AddProfile> {
               height: 50.h,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddProfile2()));
+                  if (deviceIdController.text.trim() != "") {
+                    ScanDeviceId(
+                      context: context,
+                      deviceId: deviceIdController.text.trim(),
+                    ).findDeviceId();
+                  } else if (deviceIdController.text.trim() == "") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please enter a device ID'),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 4,

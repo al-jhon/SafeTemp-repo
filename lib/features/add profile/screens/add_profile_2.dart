@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:safe_temp/features/main%20controller/screens/main_controller.dart';
+import 'package:safe_temp/features/add%20profile/services/add_profile_to_firebase.dart';
 import 'package:safe_temp/widgets/my_appbar_for_profile_page.dart';
 
 class AddProfile2 extends StatefulWidget {
-  const AddProfile2({super.key});
+  final String? deviceId;
+  const AddProfile2({super.key, required this.deviceId});
 
   @override
   State<AddProfile2> createState() => _AddProfile2State();
 }
 
 class _AddProfile2State extends State<AddProfile2> {
+  TextEditingController nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,6 +108,8 @@ class _AddProfile2State extends State<AddProfile2> {
                       SizedBox(
                         height: 46.h,
                         child: TextField(
+                          controller: nameController,
+                          // keyboardType: TextInputType.name
                           decoration: InputDecoration(
                             fillColor: Theme.of(context).colorScheme.tertiary,
                             filled: true,
@@ -124,14 +135,20 @@ class _AddProfile2State extends State<AddProfile2> {
               height: 50.h,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MainController(),
-                    ),
-                    (route) =>
-                        false, // This condition removes all previous routes
+                  if (nameController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please enter a name'),
+                      ),
+                    );
+                    return;
+                  }
+                  AddProfileToFirebase ref = AddProfileToFirebase(
+                    name: nameController.text.trim(),
+                    deviceId: widget.deviceId!,
+                    context: context,
                   );
+                  ref.addProfileToFirebase();
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 4,

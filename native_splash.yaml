@@ -4,8 +4,8 @@ flutter_native_splash:
   web: false
 
   color: "#494949"
-  image: "assets/safetemp-high-resolution-logo-dark-one.png"
+  image: "assets/safetemp-high-resolution-logo-two.png"
 
   android_12:
-    image: "assets/safetemp-high-resolution-logo-dark-one.png"
+    image: "assets/safetemp-high-resolution-logo-two.png"
     color: "#494949"
