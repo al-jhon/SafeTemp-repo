@@ -5,8 +5,8 @@ Future<String> getTemperature(String deviceID) async {
   DataSnapshot snapshot = await deviceRef.get();
   final data = snapshot.value as Map<dynamic, dynamic>?;
 
-  if (data != null && data['temperature'] != null) {
-    return data['temperature'].toString();
+  if (data != null) {
+    return data['temperature'];
   } else {
     return '0';
   }

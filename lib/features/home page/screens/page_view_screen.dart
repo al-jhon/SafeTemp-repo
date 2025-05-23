@@ -13,7 +13,6 @@ class PageViewScreen extends StatefulWidget {
 }
 
 class _PageViewScreenState extends State<PageViewScreen> {
-  
   bool _default = true; // Initialize with a default value
   String temperature = "0"; // Declare temperature as a state variable
 
@@ -45,7 +44,8 @@ class _PageViewScreenState extends State<PageViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    DatabaseReference deviceRef = FirebaseDatabase.instance.ref(widget.deviceId);
+    DatabaseReference deviceRef =
+        FirebaseDatabase.instance.ref(widget.deviceId);
     // deviceRef.onValue.listen((event) {
     //   final data = event.snapshot.value as Map<dynamic, dynamic>?;
 
@@ -156,6 +156,9 @@ class _PageViewScreenState extends State<PageViewScreen> {
                           Text(
                             temperature, // Show temperature value dynamically
                             style: TextStyle(
+                              color: double.parse(temperature) <= 39.0
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Colors.red,
                               fontSize: 75.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -163,6 +166,9 @@ class _PageViewScreenState extends State<PageViewScreen> {
                           Icon(
                             Icons.thermostat_rounded,
                             size: 50.sp,
+                            color: double.parse(temperature) <= 39.0
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Colors.red,
                           ),
                         ],
                       ),
