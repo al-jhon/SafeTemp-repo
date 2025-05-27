@@ -29,7 +29,10 @@ class MyAppbarForProfilePage extends StatelessWidget
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             onPressed: () {},
           ),
         ],

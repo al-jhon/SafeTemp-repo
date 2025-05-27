@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:safe_temp/features/add%20profile/services/add_profile_to_firebase.dart';
 import 'package:safe_temp/widgets/my_appbar_for_profile_page.dart';
 
@@ -13,6 +19,47 @@ class AddProfile2 extends StatefulWidget {
 
 class _AddProfile2State extends State<AddProfile2> {
   TextEditingController nameController = TextEditingController();
+  File? imageFile;
+  String? _imageUrl;
+
+  final picker = ImagePicker();
+
+  Future<void> uploadImage() async {
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dpsqzjmqw/upload');
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'jzk00itl'
+      ..files.add(await http.MultipartFile.fromPath(
+        'file',
+        imageFile!.path,
+      ));
+
+    final responce = await request.send();
+    if (responce.statusCode == 200) {
+      final responseData = await responce.stream.toBytes();
+      final responseString = String.fromCharCodes(responseData);
+      final jsonMap = jsonDecode(responseString);
+      setState(() {
+        final url = jsonMap['url'];
+        _imageUrl = url;
+      });
+    }
+  }
+
+  pickCamera() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+      setState(() {});
+    }
+  }
+
+  pickGallery() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
@@ -52,10 +99,15 @@ class _AddProfile2State extends State<AddProfile2> {
                         height: 250.h,
                         width: 250.w,
                         color: Theme.of(context).colorScheme.primary,
-                        child: Icon(
-                          Icons.person,
-                          size: 167.sp,
-                        ),
+                        child: imageFile == null
+                            ? Icon(
+                                Icons.person,
+                                size: 167.sp,
+                              )
+                            : Image.file(
+                                imageFile!,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                   ),
@@ -66,10 +118,39 @@ class _AddProfile2State extends State<AddProfile2> {
                       child: IconButton(
                         icon: Icon(
                           Icons.add_a_photo_outlined,
+                          color: Theme.of(context).colorScheme.onSurface,
                           size: 48.sp,
                         ),
                         onPressed: () {
-                          // Add your onPressed code here!
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: const Text('Choose Photo Source'),
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.photo_library,
+                                              size: 40),
+                                          tooltip: 'Gallery',
+                                          onPressed: () async {
+                                            pickGallery();
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.camera_alt,
+                                              size: 40),
+                                          tooltip: 'Camera',
+                                          onPressed: () async {
+                                            pickCamera();
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ));
                         },
                       ),
                     ),
@@ -134,7 +215,7 @@ class _AddProfile2State extends State<AddProfile2> {
             child: SizedBox(
               height: 50.h,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (nameController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -143,7 +224,22 @@ class _AddProfile2State extends State<AddProfile2> {
                     );
                     return;
                   }
+                  if (imageFile == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select an image'),
+                      ),
+                    );
+                    return;
+                  }
+                  showDialog(
+                      context: context,
+                      builder: (context) =>
+                          const Center(child: CircularProgressIndicator()));
+                  await uploadImage();
+                  Navigator.of(context).pop(); // Close the loading dialog
                   AddProfileToFirebase ref = AddProfileToFirebase(
+                    profilePicture: _imageUrl!,
                     name: nameController.text.trim(),
                     deviceId: widget.deviceId!,
                     context: context,

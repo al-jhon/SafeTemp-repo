@@ -10,7 +10,8 @@ ThemeData lightMode = ThemeData(
       tertiary: Colors.white, //for app bar color
       tertiaryContainer:
           Color.fromRGBO(217, 217, 217, 1), //for button that is not selected
-      surfaceContainerLow: Color.fromRGBO(217, 217, 217, 1) //for bottom nav bar
+      surfaceContainerLow: Color.fromRGBO(217, 217, 217, 1), //for bottom nav bar
+      onSurfaceVariant: Colors.orange
       ),
   shadowColor: Colors.grey[100],
 );
@@ -25,6 +26,7 @@ ThemeData darkMode = ThemeData(
     tertiary: Color.fromRGBO(150, 150, 150, 1),
     tertiaryContainer: Color.fromRGBO(129, 129, 129, 1),
     surfaceContainerLow: Color.fromRGBO(129, 129, 129, 1),
+    onSurfaceVariant: Colors.yellow
   ),
   shadowColor: const Color.fromRGBO(0, 0, 0, 25),
 );

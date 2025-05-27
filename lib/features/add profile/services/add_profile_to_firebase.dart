@@ -8,9 +8,13 @@ class AddProfileToFirebase {
   final String name;
   final String deviceId;
   final BuildContext context;
+  final String profilePicture;
 
   AddProfileToFirebase(
-      {required this.name, required this.deviceId, required this.context});
+      {required this.name,
+      required this.deviceId,
+      required this.context,
+      required this.profilePicture});
 
   Future<void> addProfileToFirebase() async {
     try {
@@ -33,6 +37,7 @@ class AddProfileToFirebase {
         'name': upperCasedName,
         'deviceId': deviceId,
         'createdAt': DateTime.now(),
+        'profilePicture': profilePicture,
       });
 
       Navigator.of(context).pop(); // Close the loading dialog

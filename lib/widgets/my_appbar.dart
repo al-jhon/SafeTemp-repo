@@ -29,7 +29,10 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             onPressed: () {
               Navigator.push(
                 context,

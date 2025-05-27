@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final String uid = userId()!;
+    String profileUID;
 
     return Scaffold(
         body: StreamBuilder(
@@ -39,7 +40,10 @@ class _HomePageState extends State<HomePage> {
                 itemCount: streamSnapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   final doc = streamSnapshot.data!.docs[index];
+                  profileUID = doc.id;
                   return PageViewScreen(
+                    profileUID: profileUID,
+                    profilePicture: doc['profilePicture'],
                     name: doc['name'],
                     deviceId: doc['deviceId'],
                   );

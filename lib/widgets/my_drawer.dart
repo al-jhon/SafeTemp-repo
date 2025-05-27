@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:safe_temp/features/edit/screens/edit_page.dart';
 import 'package:safe_temp/provider%20functions/my_navbar_state_provider.dart';
 import 'package:safe_temp/provider%20functions/my_theme_provider.dart';
 import 'package:safe_temp/services/user_email.dart';
@@ -135,6 +136,11 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditPage(),
+                          ));
                     },
                   ),
                   Divider(
